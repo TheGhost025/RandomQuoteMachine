@@ -1,5 +1,6 @@
 // import logo from './logo.svg';
 // import './App.css';
+import './style.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -8,6 +9,7 @@ class RandQuote extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            counter : 0,
             randQuote: {
                 text: "",
                 source: ""
@@ -295,23 +297,38 @@ class RandQuote extends React.Component {
             },],
         }
         this.getRandQuote = this.getRandQuote.bind(this);
+        this.getTweetLink = this.getTweetLink(this);
+    }
+    componentDidMount() {
+        let colors = ["red","blue","black","purple","pink"];
+        document.body.style.backgroundColor = colors[Math.floor(Math.random() * (colors.length))];
+        document.body.style.transition = "all 0.8s ease";
     }
 
     getRandQuote() {
         const randQuote = this.state.quotes[Math.floor(Math.random() * (this.state.quotes.length))];
-        this.setState(prevState => ({ randQuote: randQuote }));
+        this.setState(prevState => ({ counter:this.state.counter++,randQuote: randQuote }));
     }
 
+    getTweetLink(){
+        var str = '"' + this.state.randQuote.text +'" - '+this.state.randQuote.source;
+        return "https://twitter.com/intent/tweet?text="+ str.split(" ").join("%20").split("@").join("%40").split("!").join("%21");
+    }
 
     render() {
+        if(this.state.counter==0)
+            this.getRandQuote();
+        let colors = ["red","blue","black","purple","pink"];
+        document.body.style.backgroundColor = colors[Math.floor(Math.random() * (colors.length))];
+        document.body.style.transition = "all 0.8s ease";
         return (
-            <div class="bg">
+            <div class="con d-flex align-items-center justify-content-center">
                 <div id="quote-box">
                     <div id="text">{this.state.randQuote.text}</div>
                     <div id="author">{this.state.randQuote.source}</div>
                     <div id="buttons" class="text-center">
                     <button id="new-quote" class="btn btn-lg btn-success" onClick={this.getRandQuote}>New Quote</button>
-                    <a id="tweet-quote" class="btn btn-lg btn-primary" href='#' target="_blank" >Tweet Quote</a>
+                    <a id="tweet-quote" class="btn btn-lg btn-primary" href={this.getTweetLink} target="_blank" >Tweet Quote</a>
                   </div>
                 </div>
             </div>
